@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  api_service:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - springapimongodb-net
+    environment:
+      - spring.data.mongodb.uri=mongodb+srv://root:N8xUGZXnGzaNssQB@cluster1.eunnq.mongodb.net/btg_fondos?retryWrites=true&w=majority
+    volumes:
+      - .m2:/root/.m2
+      
+networks:
+  springapimongodb-net:

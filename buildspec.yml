@@ -1,0 +1,35 @@
+phases:
+  install:
+    runtime-versions:
+      java: corretto17  # Especifico la versión de Java que deseo usar
+    commands:
+      - echo "Installing Maven..."
+      - curl -sSL https://repos.apache.org/podlings/maven/3.8.6/binaries/apache-maven-3.8.6-bin.zip -o maven.zip  # Descargo Maven
+      - unzip maven.zip -d /opt/  # Descomprimo Maven
+      - export PATH=$PATH:/opt/apache-maven-3.8.6/bin  # Agrego Maven al PATH
+      - mvn -version  # Verifico la instalación de Maven
+
+  pre_build:
+    commands:
+      - echo "Entering pre-build phase..."
+      - mvn clean  # Limpio el proyecto antes de construir
+
+  build:
+    commands:
+      - echo "Building the project..."
+      - mvn package  # Compilo y empaqueto el proyecto en un JAR
+
+  post_build:
+    commands:
+      - echo "Build completed successfully!"
+      - echo "Uploading artifacts to S3..."
+      - aws s3 cp target/*.jar s3://bucket-banco-backend/artifacts/  # Subo el JAR al bucket de S3
+
+artifacts:
+  files:
+    - target/*.jar  # Especifico los archivos JAR generados como artefactos de salida
+
+# Opcional: Agregar variables de entorno si es necesario
+env:
+  variables:
+    MY_ENV_VAR: "valor"  # Aquí puedes agregar variables de entorno según sea necesario
